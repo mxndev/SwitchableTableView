@@ -34,6 +34,11 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Switchable Table View" id="frJ-6g-IaW">
+                        <barButtonItem key="leftBarButtonItem" title="Generate" id="j5b-qH-TxZ">
+                            <connections>
+                                <action selector="generateNewDatasource" destination="Kbs-qh-dxP" id="eFh-dw-nYA"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Switch" id="gJo-e2-573">
                             <connections>
                                 <action selector="switchDataSource" destination="Kbs-qh-dxP" id="aLE-kA-pH9"/>

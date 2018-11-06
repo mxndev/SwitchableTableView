@@ -11,8 +11,8 @@ import UIKit
 class ViewController: UITableViewController {
     
     // preapre data sources
-    let dataSourcePartOne: [String] = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p"]
-    let dataSourcePartTwo: [String] = ["k","c","z","a","o","p","l","m","i","k","j","r","f","s","y","b", "u"]
+    var dataSourcePartOne: [String] = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p"]
+    var dataSourcePartTwo: [String] = ["k","c","z","a","o","p","l","m","i","k","j","r","f","s","y","b", "u"]
     var dataSourceArray: [String] = []
     
     let cellReuseIdentifier = "ReusableCell"
@@ -66,6 +66,44 @@ class ViewController: UITableViewController {
         dataSourceArray.append(contentsOf: switchOneToTwo ? self.dataSourcePartTwo : self.dataSourcePartOne)
         tableView.endUpdates()
     }
+    
+    @IBAction func generateNewDatasource() {
+        dataSourcePartOne.removeAll()
+        let initialDataSource: [String] = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","r","s","t","u","w","x","y","z"]
+        // prepare first set
+        while dataSourcePartOne.count < 17 {
+            let value = arc4random_uniform(23)
+            if !dataSourcePartOne.contains(initialDataSource[Int(value)]) {
+                dataSourcePartOne.append(initialDataSource[Int(value)])
+            }
+        }
+        // prepare initial overlap data for second set (67%)
+        var secondDataSource: [String] = []
+        while secondDataSource.count < 12 {
+            let value = arc4random_uniform(17)
+            if !secondDataSource.contains(dataSourcePartOne[Int(value)]) {
+                secondDataSource.append(dataSourcePartOne[Int(value)])
+            }
+        }
+        // prepare second set
+        dataSourcePartTwo.removeAll()
+        while dataSourcePartTwo.count < 18 {
+            if arc4random_uniform(2) == 1 {
+                let value = arc4random_uniform(12)
+                if !dataSourcePartTwo.contains(secondDataSource[Int(value)]) {
+                    dataSourcePartTwo.append(secondDataSource[Int(value)])
+                }
+            } else {
+                let value = arc4random_uniform(23)
+                if !dataSourcePartTwo.contains(initialDataSource[Int(value)]) {
+                    dataSourcePartTwo.append(initialDataSource[Int(value)])
+                }
+            }
+        }
+        dataSourceArray.removeAll()
+        dataSourceArray.append(contentsOf: dataSourcePartOne)
+        tableView.reloadData()
+    }
 }
 
 // MARK - Table View delegaate
@@ -106,7 +144,7 @@ extension ViewController {
         for (index, element) in setTwo.enumerated() {
             if setOne.filter({ $0 == element }).count == 1 {
                 // move only when indexes is differents
-                if setOne[index] != setTwo[index] {
+                if (((setOne.count > index) && (setOne[index] != setTwo[index])) || (setOne.count < index)) {
                     if ((setTwo.count - setOne.count < 0) && (index < setOne.count)) || ((setTwo.count - setOne.count >= 0) && (index < setTwo.count)) {
                         rows.append(index)
                     }
